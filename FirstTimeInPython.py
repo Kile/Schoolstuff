@@ -6,7 +6,7 @@ def optionfunktion():
   value = input('Insert a number: ')
   if not value.isdigit():
     if value == 'stop':
-      return value
+      return 'stop'
     else:
       print('Error, input must be a number, please re-enter')
     optionfunktion()
