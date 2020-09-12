@@ -3,9 +3,18 @@ a = [0, 0]
 
 
 def optionfunktion(): 
-    return (input('Insert your option '))
-    
-
+  value = input('Insert a number: ')
+  if not value.isdigit():
+    if value == 'stop':
+      return value
+    else:
+      print('Error, input must be a number, please re-enter')
+    optionfunktion()
+  else: 
+    return value
+  
+ 
+  
 def function(menustate, correctorfailed):
     if correctorfailed != 'false':
         return [a[0]+1, a[1]+1]
@@ -37,4 +46,3 @@ while option != 'stop':
      print('total correct attempts ')
      print(a[1])
      option = optionfunktion()
-
