@@ -11,7 +11,7 @@ def optionfunktion():
       print('Error, input must be a number, please re-enter')
     optionfunktion()
   else: 
-    return value
+    return int(value)
   
  
   
@@ -23,7 +23,7 @@ def function(menustate, correctorfailed):
 
 option = optionfunktion()
 
-while option != 'stop':
+while option !== 'stop':
 
     if option == 1:
      print('')
