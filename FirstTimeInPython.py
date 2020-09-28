@@ -13,9 +13,9 @@ def optionfunktion():
       return 'stop'
     else:
       print('Error, input must be a number, please re-enter')
-    optionfunktion()
+      optionfunktion()
   else:
-    if int(value) > 15 or int(value) < 0:
+    if int(value) > 15 or int(value) <= 0:
       print('Number must be between 1 and 15')
       optionfunktion()
     else:   
