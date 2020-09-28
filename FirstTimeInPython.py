@@ -1,21 +1,29 @@
 
+import random
+from random import randint
+
 a = [0, 0]
+correctnumber = random.choice([1, 2,3,4,5,6,7,8,9,10,11,12,13,14,15])
 
 
 def optionfunktion(): 
-  value = input('Insert a number: ')
+  value = input('Insert a number between 1 and 15: ')
   if not value.isdigit():
     if value == 'stop':
       return 'stop'
     else:
       print('Error, input must be a number, please re-enter')
     optionfunktion()
-  else: 
-    return int(value)
+  else:
+    if int(value) > 15 or int(value) < 0:
+      print('Number must be between 1 and 15')
+      optionfunktion()
+    else:   
+      return int(value)
   
  
   
-def function(menustate, correctorfailed):
+def function(correctorfailed):
     if correctorfailed != 'false':
         return [a[0]+1, a[1]+1]
     else:
@@ -23,26 +31,26 @@ def function(menustate, correctorfailed):
 
 option = optionfunktion()
 
-while option !== 'stop':
+while option != 'stop':
 
-    if option == 1:
+    if option == correctnumber:
      print('')
      print("Correct")
-     a = function(a[0], a[1])
+     a = function(a[1])
      print('')
-     print('total attempts:')
+     print('Total attempts:')
      print(a[0])
-     print('total correct attempts ')
+     print('Total correct attempts: ')
      print(a[1])
      option = optionfunktion()
      
     else:
      print('')
      print("Incorrect")
-     a = function(a[0], 'false')
+     a = function('false')
      print('')
-     print('total attempts:')
+     print('Total attempts:')
      print(a[0])
-     print('total correct attempts ')
+     print('Total correct attempts: ')
      print(a[1])
      option = optionfunktion()
