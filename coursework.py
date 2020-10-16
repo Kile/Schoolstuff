@@ -6,9 +6,9 @@
 
 import time
 
-
-airports = ['test']
-otherairports = ['test2']
+results = ''
+airports = ['LPL', 'BOH']
+otherairports = ['JFK', 'ORY', 'MAD', 'AMS', 'CAI']
 airplanetypes = ['medium narrow body', 'large narrow body', 'medium wide body']
 
 data = {
@@ -21,10 +21,53 @@ data = {
 
 }
 
+distance = {
+    'JFK': {
+        'LPL': 5326,
+        'BOH': 5486
+    },
+    'ORY': {
+        'LPL': 629,
+        'BOH': 379
+    },
+    'MAD': {
+        'LPL': 1428,
+        'BOH': 1151
+    },
+    'AMS': {
+        'LPL': 526,
+        'BOH': 489
+    },
+    'CAI': {
+        'LPL': 3779,
+        'BOH': 3584
+    }
+}
+
+airplaneinfo = {
+    'medium narrow body': {
+        'maxrange': 2650,
+        'costpseat100km': 8,
+        'capacity': 180,
+        'minimumfseats': 8
+    },
+    'large narrow body': {
+        'maxrange': 5600,
+        'costpseat100km': 7,
+        'capacity': 220,
+        'minimumfseats': 10
+    },
+    'medium wide body': {
+        'maxrange': 4050,
+        'costpseat100km': 5,
+        'capacity': 406,
+        'minimumfseats': 14
+    },
+
+}
 
 def checkingresults():
   
-
   val1 = data['UKairport']
   val2 = data['overseasairp']
   val3 = data['airptype']
@@ -32,7 +75,6 @@ def checkingresults():
   val5 = data['pfirstcseat']
   val6 = data['pstandartcseat']
   results = [val1, val2, val3, val4, val5, val6]
-  print(results)
   if '' in results:
     return False
   else:
@@ -40,19 +82,34 @@ def checkingresults():
 
 
 
+def calculatingresults():
+  airtype = airplaneinfo[data['airptype']]
+  print(f'Airtype: {airtype}')
+  airportov = distance[data['overseasairp']] 
+  print(f'Airport overseas data: {airportov}')
+  nstandartseats = airtype['capacity'] - int(data['nfirstcseat']) * 2
+  print(f'Number of standart seats: {nstandartseats}')
+  priceperseat = airtype['costpseat100km'] * (airportov[data['UKairport']]/100)
+  print(f'Price per seat: {priceperseat}£')
+  totalcost = priceperseat * (nstandartseats + int(data['nfirstcseat']))
+  print(f'Total cost: {totalcost}£')
+  totalincome = int(data['nfirstcseat']) * int(data['pfirstcseat']) + (airtype['capacity'] - int(data['nfirstcseat'])*2) * int(data['pstandartcseat'])
+  print(f'Total income: {totalincome}£')
+  totalprofit = totalincome - totalcost
+  print(f'Total profit {totalprofit}£')
+
 
 
 def dealingwith1():
 #working title
   value = input('Please enter the UK airpot (example: LON)\nTo cancel, insert \'cancel\'\n')
   
-  if value.lower() in airports:
+  if value.upper() in airports:
     data['UKairport']= value.upper()
     print(f'Answer {value} has been saved!\n')
     complete = checkingresults()
     if complete is True:
-      #do some calculations and give the result but for now:
-      print('Complete!')
+      calculatingresults()
     else:
       time.sleep(2)
       menu()
@@ -69,13 +126,12 @@ def dealingwith2():
 #working title
   value = input('Please enter the overseas airpot (example: JFK)\nTo cancel, insert \'cancel\'\n')
   
-  if value.lower() in otherairports:
+  if value.upper() in otherairports:
     data['overseasairp']= value.upper()
     print(f'Answer {value} has been saved!\n')
     complete = checkingresults()
     if complete is True:
-      #do some calculations and give the result but for now:
-      print('Complete!')
+      calculatingresults()
     else:
       time.sleep(2)
       menu()
@@ -97,8 +153,7 @@ def dealingwith3():
     print(f'Answer {value} has been saved!\n')
     complete = checkingresults()
     if complete is True:
-      #do some calculations and give the result but for now:
-      print('Complete!')
+      calculatingresults()
     else:
       time.sleep(2)
       menu()
@@ -125,21 +180,27 @@ def dealingwith4():
       time.sleep(2)
       dealingwith4()
   else:
-    if int(value) > 8 or int(value) <= 0:
-      #Note: change numbers
-      print('Number must be between 1 and 8\n')
+    plane = airplaneinfo[data['airptype']]
+    if plane == '':
+      print('You must first enter an aitplane type before proceeding\n')
       time.sleep(2)
-      dealingwith4()
-    else:   
-      data['nfirstcseat']= value
-      print(f'Answer {value} has been saved!\n')
-      complete = checkingresults()
-      if complete is True:
-        #do some calculations and give the result but for now:
-        print('Complete!')
-      else:
+      menu()
+    else:
+      maxseats = plane['capacity']
+      if int(value) > int(maxseats) or int(value) <= 0:
+        #Note: change numbers
+        print(f'Number must be not greater than {maxseats} and greater than 0\n')
         time.sleep(2)
-        menu()
+        dealingwith4()
+      else:   
+        data['nfirstcseat']= value
+        print(f'Answer {value} has been saved!\n')
+        complete = checkingresults()
+        if complete is True:
+          calculatingresults()
+        else:
+          time.sleep(2)
+          menu()
       
 def dealingwith5():
 #working title
@@ -155,9 +216,9 @@ def dealingwith5():
       time.sleep(2)
       dealingwith5()
   else:
-    if int(value) > 8 or int(value) <= 0:
+    if int(value) > 10000 or int(value) <= 0:
       #Note: change numbers
-      print('Number must be between 1 and 8\n')
+      print('Number must be between 0 and 10000\n')
       time.sleep(2)
       dealingwith5()
     else:   
@@ -165,8 +226,7 @@ def dealingwith5():
       print(f'Answer {value} has been saved!\n')
       complete = checkingresults()
       if complete is True:
-        #do some calculations and give the result but for now:
-       print('Complete!')
+        calculatingresults()
       else:
         time.sleep(2)
         menu()
@@ -185,9 +245,9 @@ def dealingwith6():
       time.sleep(2)
       dealingwith6()
   else:
-    if int(value) > 8 or int(value) <= 0:
+    if int(value) > 10000 or int(value) <= 0:
       #Note: change numbers
-      print('Number must be between 1 and 8\n')
+      print('Number must be between 1 and 10000\n')
       time.sleep(2)
       dealingwith6()
     else:   
@@ -195,11 +255,19 @@ def dealingwith6():
       print(f'Answer {value} has been saved!\n')
       complete = checkingresults()
       if complete is True:
-        #do some calculations and give the result but for now:
-        print('Complete!')
+        calculatingresults()
       else:
         time.sleep(2)
         menu()
+
+def clearvalues():
+  data['airptype'] = ''
+  data['nfirstcseat'] = ''
+  data['overseasairp'] = ''
+  data['pfirstcseat'] = ''
+  data['pstandartcseat'] = ''
+  data['UKairport'] = ''
+
 
 def taskmanager(task):
   if task == 1:
@@ -222,8 +290,9 @@ def taskmanager(task):
     dealingwith6()
   if task == 7:
     #clearing the array
-    data.fromkeys(data, '')
+    clearvalues()
     print('Cleared values\n')
+    print(data)
     time.sleep(2)
     menu()
     
@@ -231,7 +300,7 @@ def taskmanager(task):
 def menu():
   print('''(1) UK airport
 (2) Overseas airport
-(3) Type of aircrafts
+(3) Type of aircraft
 (4) Number of first class seats
 (5) Price of first class seat
 (6) Price of standart class seat
@@ -260,5 +329,4 @@ Thanks for using Easy-Flight
 
 
 option = menu()
-
 
