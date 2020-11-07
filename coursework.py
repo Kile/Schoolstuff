@@ -1,9 +1,3 @@
-#I am a programmar
-#I am a programar
-#I am a programer
-
-#I make code
-
 import time
 
 results = ''
@@ -72,47 +66,51 @@ def checkingresults():
   val2 = data['overseasairp']
   val3 = data['airptype']
   val4 = data['nfirstcseat']
-  val5 = data['pfirstcseat']
-  val6 = data['pstandartcseat']
-  results = [val1, val2, val3, val4, val5, val6]
+  results = [val1, val2, val3, val4]
   if '' in results:
     return False
   else:
-    return True
-
-
+    d = distance[val2]
+    reald = d[val1]
+    airp = airplaneinfo[val3]
+    planecapability = airp['maxrange']
+    if reald > planecapability:
+      return False
+    else:
+      return True
 
 def calculatingresults():
   airtype = airplaneinfo[data['airptype']]
-  print(f'Airtype: {airtype}')
   airportov = distance[data['overseasairp']] 
-  print(f'Airport overseas data: {airportov}')
   nstandartseats = airtype['capacity'] - int(data['nfirstcseat']) * 2
-  print(f'Number of standart seats: {nstandartseats}')
+
   priceperseat = airtype['costpseat100km'] * (airportov[data['UKairport']]/100)
-  print(f'Price per seat: {priceperseat}£')
   totalcost = priceperseat * (nstandartseats + int(data['nfirstcseat']))
-  print(f'Total cost: {totalcost}£')
   totalincome = int(data['nfirstcseat']) * int(data['pfirstcseat']) + (airtype['capacity'] - int(data['nfirstcseat'])*2) * int(data['pstandartcseat'])
-  print(f'Total income: {totalincome}£')
   totalprofit = totalincome - totalcost
-  print(f'Total profit {totalprofit}£')
+
+  print(f'''#### RESULTS ####
+  
+  Price per seat: {priceperseat}£
+  Total cost: {totalcost}£
+  Total income: {totalincome}£
+  Total profit {totalprofit}£
+  
+#################
+''')
+  clearvalues()
+  menu()
 
 
 
 def dealingwith1():
 #working title
-  value = input('Please enter the UK airpot (example: LON)\nTo cancel, insert \'cancel\'\n')
+  value = input('Please enter the UK airpot (example: LPL)\nTo cancel, insert \'cancel\'\n')
   
   if value.upper() in airports:
     data['UKairport']= value.upper()
     print(f'Answer {value} has been saved!\n')
-    complete = checkingresults()
-    if complete is True:
-      calculatingresults()
-    else:
-      time.sleep(2)
-      menu()
+    dealingwith2()
   elif value == 'cancel':
     print('Selection canceled\n')
     time.sleep(2)
@@ -129,14 +127,12 @@ def dealingwith2():
   if value.upper() in otherairports:
     data['overseasairp']= value.upper()
     print(f'Answer {value} has been saved!\n')
-    complete = checkingresults()
-    if complete is True:
-      calculatingresults()
-    else:
-      time.sleep(2)
-      menu()
+    
+    time.sleep(2)
+    menu()
   elif value == 'cancel':
     print('Selection canceled\n')
+    data['UKairport'] = ''
     time.sleep(2)
     menu()
   else:
@@ -151,12 +147,8 @@ def dealingwith3():
   if value.lower() in airplanetypes:
     data['airptype']= value.lower()
     print(f'Answer {value} has been saved!\n')
-    complete = checkingresults()
-    if complete is True:
-      calculatingresults()
-    else:
-      time.sleep(2)
-      menu()
+    time.sleep(2)
+    dealingwith4()
   elif value == 'cancel':
     print('Selection canceled\n')
     time.sleep(2)
@@ -174,6 +166,7 @@ def dealingwith4():
     if value == 'cancel':
       print('Selection canceled\n')
       time.sleep(2)
+      data['airptype'] = ''
       menu()
     else:
       print('Error, input must be a number, please re-enter')
@@ -181,30 +174,24 @@ def dealingwith4():
       dealingwith4()
   else:
     plane = airplaneinfo[data['airptype']]
-    if plane == '':
-      print('You must first enter an aitplane type before proceeding\n')
+
+    maxseats = plane['capacity']
+    if int(value) > int(maxseats) or int(value) <= 0:
+      print(f'Number must be not greater than {maxseats} and greater than 0\n')
+      time.sleep(2)
+      dealingwith4()
+    else:   
+      data['nfirstcseat']= value
+      print(f'Answer {value} has been saved!\n')
       time.sleep(2)
       menu()
-    else:
-      maxseats = plane['capacity']
-      if int(value) > int(maxseats) or int(value) <= 0:
-        #Note: change numbers
-        print(f'Number must be not greater than {maxseats} and greater than 0\n')
-        time.sleep(2)
-        dealingwith4()
-      else:   
-        data['nfirstcseat']= value
-        print(f'Answer {value} has been saved!\n')
-        complete = checkingresults()
-        if complete is True:
-          calculatingresults()
-        else:
-          time.sleep(2)
-          menu()
       
 def dealingwith5():
 #working title
-  
+  check = checkingresults
+  if check is False:
+    print('\nYou have not entered every data or an airplane that is not capable of flying from given airports, use the clear option to restart\n')
+    return menu()
   value = input('What does a first class seat cost?\nTo cancel, insert \'cancel\'\n')
   if not value.isdigit():
     if value == 'cancel':
@@ -224,12 +211,8 @@ def dealingwith5():
     else:   
       data['pfirstcseat'] = value
       print(f'Answer {value} has been saved!\n')
-      complete = checkingresults()
-      if complete is True:
-        calculatingresults()
-      else:
-        time.sleep(2)
-        menu()
+      dealingwith6()
+      
       
 def dealingwith6():
 #working title
@@ -253,12 +236,10 @@ def dealingwith6():
     else:   
       data['pstandartcseat']= value
       print(f'Answer {value} has been saved!\n')
-      complete = checkingresults()
-      if complete is True:
-        calculatingresults()
-      else:
-        time.sleep(2)
-        menu()
+ 
+      checkingresults()
+      calculatingresults()
+
 
 def clearvalues():
   data['airptype'] = ''
@@ -275,21 +256,11 @@ def taskmanager(task):
     dealingwith1()
   if task == 2:
     #giving task to another function dealing with 2
-    dealingwith2()
+    dealingwith3()
   if task == 3:
     #giving task to another function dealing with 3
-    dealingwith3()
-  if task == 4:
-    #giving task to another function dealing with 4
-    dealingwith4()
-  if task == 5:
-    #giving task to another function dealing with 5
     dealingwith5()
-  if task == 6:
-    #giving task to another function dealing with 5
-    dealingwith6()
-  if task == 7:
-    #clearing the array
+  if task == 4:
     clearvalues()
     print('Cleared values\n')
     print(data)
@@ -298,24 +269,21 @@ def taskmanager(task):
     
 
 def menu():
-  print('''(1) UK airport
-(2) Overseas airport
-(3) Type of aircraft
-(4) Number of first class seats
-(5) Price of first class seat
-(6) Price of standart class seat
-(7) Reset values
-(8) Exit\n''')
+  print('''(1) Enter airport details
+(2) Enter flight details
+(3) Enter price details and calculate profit
+(4) Reset values
+(5) Exit\n''')
   value = input('What would you like to do? ')
   if not value.isdigit():
       print('Error, input must be a number, please re-enter')
       menu()
   else:
-    if int(value) > 8 or int(value) <= 0:
-      print('Number must be between 1 and 8')
+    if int(value) > 5 or int(value) <= 0:
+      print('Number must be between 1 and 5')
       menu()
     else:   
-      if int(value) == 8:
+      if int(value) == 5:
         print('''\n\n#################
         
 Left the programm
@@ -329,4 +297,3 @@ Thanks for using Easy-Flight
 
 
 option = menu()
-
