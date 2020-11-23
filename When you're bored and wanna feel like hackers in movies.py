@@ -1,8 +1,8 @@
 ######################################################################
 '''
 This is designed to be used in a python shell, it looks like
-the unrealisti hollywood hacker scenes where just random text in
-random lenght is constantly printed. So while bored in computer science
+the unrealistic hollywood hacker scenes where just random text in
+random lenght is constantly printed. So while bored in Computer Science
 class I let this run in the background to feel productive.
 Idk, feel free to use it when you're bored as well
 '''
